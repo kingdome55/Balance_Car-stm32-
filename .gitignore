@@ -1,0 +1,22 @@
+# ===== Keil MDK 工程：忽略编译产物与个人设置 =====
+
+# 编译输出目录（Keil 每次 Build 自动重新生成）
+Objects/
+Listings/
+DebugConfig/
+
+# Keil 个人配置文件（打开工程/调试时自动重建，不应纳入版本管理）
+*.uvguix
+*.uvguix.*
+*.uvopt
+*.uvoptx
+
+# 其它常见 Keil / 编译器零散产物
+*.crf
+*.o
+*.d
+*.dep
+*.axf
+*.lnp
+*.tmp
+*.bak
