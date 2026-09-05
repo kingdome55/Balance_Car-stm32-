@@ -485,6 +485,26 @@
               <FileType>5</FileType>
               <FilePath>.\user\app_usart2.h</FilePath>
             </File>
+            <File>
+              <FileName>app_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\app_button.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_button.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\app_button.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\app_pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_pwm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\app_pwm.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

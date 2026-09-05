@@ -7,10 +7,9 @@
   * @brief   按钮驱动程序
   ******************************************************************************
   */
-
 #include "button.h"
 #include "delay.h"
-
+#include <stddef.h>
 #define BUTTON_SETTLING_TIME             10   // 按钮消抖延迟
 #define BUTTON_CLICK_INTERVAL            200  // 按钮多击时每次点击的时间最大时间间隔
 #define BUTTON_LONG_PRESS_THRESHOLD      1000 // 按钮长按最小时间
@@ -20,6 +19,51 @@ static void OnButtonPressed(Button_TypeDef *Button);
 static void OnButtonReleased(Button_TypeDef *Button);
 static void OnButtonEveryPolled(Button_TypeDef *Button, uint8_t State, uint32_t currentTime);
 static void GPIOClockCmd(GPIO_TypeDef *GPIOx, uint8_t Enable);
+
+//====================新增：动态设置回调接口实现====================
+/**
+ * @brief 设置按键按下回调
+ */
+void My_Button_SetPressedCb(Button_TypeDef *Button, void (*cb)(void))
+{
+	if(Button != NULL)
+	{
+		Button->button_pressed_cb = cb;
+	}
+}
+
+/**
+ * @brief 设置按键松开回调
+ */
+void My_Button_SetReleasedCb(Button_TypeDef *Button, void (*cb)(void))
+{
+	if(Button != NULL)
+	{
+		Button->button_released_cb = cb;
+	}
+}
+
+/**
+ * @brief 设置按键点击/连击回调
+ */
+void My_Button_SetClickCb(Button_TypeDef *Button, void (*cb)(uint8_t clicks))
+{
+	if(Button != NULL)
+	{
+		Button->button_clicked_cb = cb;
+	}
+}
+
+/**
+ * @brief 设置按键长按回调
+ */
+void My_Button_SetLongPressCb(Button_TypeDef *Button, void (*cb)(uint8_t ticks))
+{
+	if(Button != NULL)
+	{
+		Button->button_long_pressed_cb = cb;
+	}
+}
 
 // 
 // @简介：用于初始化按钮的驱动
@@ -72,7 +116,6 @@ void My_Button_Init(Button_TypeDef *Button, Button_InitTypeDef *Button_InistStru
 	Button->LongPressTicks = 0;
 	Button->ClickCnt = 0;
 }
-
 // 
 // @简介：按钮的进程函数
 // @参数：Button - 按钮的名称
@@ -115,7 +158,6 @@ void My_Button_Proc(Button_TypeDef *Button)
 	
 	OnButtonEveryPolled(Button, Button->LastState, currentTime); // #3. 按钮状态被检测
 }
-
 //
 // @简介：返回按钮的当前状态
 //
@@ -125,7 +167,6 @@ uint8_t MyButton_GetState(Button_TypeDef *Button)
 {
 	return Button->LastState;
 }
-
 //
 // @简介：处理按钮按下的动作
 //
@@ -139,7 +180,6 @@ static void OnButtonPressed(Button_TypeDef *Button)
 		Button->button_pressed_cb();
 	}
 }
-
 //
 // @简介：处理按钮松开的动作
 //
@@ -165,7 +205,6 @@ static void OnButtonReleased(Button_TypeDef *Button)
 		Button->ClickCnt = 0;
 	}
 }
-
 //
 // @简介：处理每一次按钮轮询的动作
 //
@@ -218,7 +257,6 @@ static void OnButtonEveryPolled(Button_TypeDef *Button, uint8_t State, uint32_t 
 		Button->ClickCnt = 0; // 清除连击记录
 	}
 }
-
 static void GPIOClockCmd(GPIO_TypeDef *GPIOx, uint8_t Enable)
 {
 	FunctionalState newState = Enable ? ENABLE : DISABLE;
