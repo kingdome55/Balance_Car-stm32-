@@ -845,6 +845,16 @@
               <FileType>5</FileType>
               <FilePath>.\test\bat_test.h</FilePath>
             </File>
+            <File>
+              <FileName>pwm_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\test\pwm_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwm_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\test\pwm_test.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
