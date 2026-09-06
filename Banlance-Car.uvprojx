@@ -855,6 +855,16 @@
               <FileType>5</FileType>
               <FilePath>.\test\pwm_test.h</FilePath>
             </File>
+            <File>
+              <FileName>encoder_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\test\encoder_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>encoder_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\test\encoder_test.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
