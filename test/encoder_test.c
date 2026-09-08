@@ -59,8 +59,9 @@ void Encoder_T_Method_Test(void)
   {
     Delay(1);
     
-    float omega_l = App_Encoder_GetPos_L();
-    float omega_r = App_Encoder_GetPos_R();
+    // T 法测速应读取瞬时角速度接口 GetSpeed，而不是位置接口 GetPos
+    float omega_l = App_Encoder_GetSpeed_L();
+    float omega_r = App_Encoder_GetSpeed_R();
     
     My_USART_Printf(USART2, "%f, %f\n", omega_l, omega_r);
   }

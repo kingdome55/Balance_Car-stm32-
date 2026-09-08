@@ -24,7 +24,7 @@ int main(void)
 	while(1)
   {
     App_Bat_Proc();
-    App_Bat_Proc();
+    App_Button_Proc(); // 之前误写为第二个 App_Bat_Proc()，按钮扫描此前一直未被调用
     
 	}
 }
