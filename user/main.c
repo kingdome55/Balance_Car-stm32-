@@ -11,7 +11,9 @@
 int main(void)
 {
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-  Encoder_Test();
+  Encoder_T_Method_Test();
+  Encoder_M_Method_Test();
+//Encoder_Test();
 //Bat_Test();
 //PWM_Test();
   App_Bat_Init();

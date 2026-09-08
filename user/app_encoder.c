@@ -1,10 +1,81 @@
- #include "app_encoder.h"
+#include "app_encoder.h"
+#include "delay.h"
 
 static volatile int64_t encoder_l = 0; // 左电机编码器值
 static volatile int64_t encoder_r = 0; // 右电机编码器值
+static volatile int8_t direction_l = 1; // 左电机旋转方向， 1 -正转， -1 - 反转
+static volatile int8_t direction_r = 1; // 右电机旋转方向， 1 -正转， -1 - 反转
+static volatile uint64_t t0_l = 0, t1_l = 0; // 左电机编码器发生变化的时间，单位 ms
+static volatile uint64_t t0_r = 0, t1_r = 0; // 右电机编码器发生变化的时间，单位 ms
+
  
 static void Encoder_L_Init(void); // 左编码器初始化
 static void Encoder_R_Init(void); // 右编码器初始化
+
+
+//
+// @简介：读取左轮胎旋转的角速度，omega的值，单位是 度/s
+//
+float App_Encoder_GetSpeed_L(void)
+{
+  __disable_irq(); // 关闭单片机总中断
+  
+  int8_t diretion_cpy = direction_l;
+  uint64_t t0_cpy = t0_l;
+  uint64_t t1_cpy = t1_l;
+  
+  __enable_irq(); // 开启单片机总中断
+  
+  if(direction_l == +2 || direction_l == -2)
+  {
+    return 0;
+  }
+  uint64_t now = GetUs();
+  float T;
+  
+  if(t0_cpy - t1_cpy > now - t0_cpy)
+  {
+    T = (t0_cpy - t1_cpy) * 1.0e-6f;
+  }
+  if(t0_cpy - t1_cpy < now - t0_cpy)
+  {
+    T = (now - t0_cpy) * 1.0e-6f;
+  }
+  
+  return direction_l / T / 22.0f / (30613.0f / 1500.0f) * 360.0f;
+}
+
+//
+// @简介：读取右轮胎旋转的角速度，omega的值，单位是 度/s
+//
+float App_Encoder_GetSpeed_R(void)
+{
+  __disable_irq(); // 关闭单片机总中断
+  
+  int8_t diretion_cpy = direction_l;
+  uint64_t t0_cpy = t0_r;
+  uint64_t t1_cpy = t1_r;
+  
+  __enable_irq(); // 开启单片机总中断
+  
+  if(direction_r == +2 || direction_r == -2)
+  {
+    return 0;
+  }
+  uint64_t now = GetUs();
+  float T;
+  
+  if(t0_cpy - t1_cpy > now - t0_r)
+  {
+    T = (t0_cpy - t1_cpy) * 1.0e-6f;
+  }
+  if(t0_cpy - t1_cpy < now - t0_cpy)
+  {
+    T = (now - t0_cpy) * 1.0e-6f;
+  }
+  
+  return direction_l / T / 22.0f / (30613.0f / 1500.0f) * 360.0f;
+}
 
 //
 // @简介：对编码器模块进行初始化
@@ -16,19 +87,19 @@ void App_Encoder_Init(void)
 }
 
 //
-// @简介：读取左编码器的当前位置
+// @简介：读取左轮胎旋转角度
 //
-int64_t App_Encoder_GetPos_L(void)
+float App_Encoder_GetPos_L(void)
 {
-  return encoder_l;
+  return encoder_l / 22.0f /(30613.0f/ 1500.0f) * 360.0f;
 }
 
 //
-// @简介：读取右编码器的当前位置
+// @简介：读取右轮胎旋转角度
 //
-int64_t App_Encoder_GetPos_R(void)
+float App_Encoder_GetPos_R(void)
 {
-  return encoder_r;
+  return encoder_r / 22.0f /(30613.0f/ 1500.0f) * 360.0f;
 }
 
 static void Encoder_L_Init(void)
@@ -38,12 +109,12 @@ static void Encoder_L_Init(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
   GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
   
-  // PB14 PB15 - IPU
+  // PB3 PB4 - IPU
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_15;
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
 
   GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -84,12 +155,12 @@ static void Encoder_L_Init(void)
 static void Encoder_R_Init(void)
 {
   // 初始化A和B的引脚
-  // PB3，PB4 - IPU
+  // PB14，PB15 - IPU
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_15;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IPU;
 
   GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -124,74 +195,90 @@ static void Encoder_R_Init(void)
 }
 
 //
-// @简介：EXTI3的中断响应函数，对应左编码器的A相
+// @简介：EXTI3的中断响应函数，对应右编码器的A相
 //
 void EXTI3_IRQHandler(void)
 {
   EXTI_ClearFlag(EXTI_Line3); // 对中断标志位清零
+
+  t1_r = t0_r;
+  t0_r = GetUs();
+
   uint8_t a = GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_3); // A相的当前电压
   uint8_t b = GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_4); // B相的当前电压
 
-  if(a == Bit_SET) // 上升沿
+  if((a == Bit_SET && b == Bit_RESET) || (a == Bit_RESET && b == Bit_SET)) // 现在轮胎正转
   {
-    if(b == Bit_RESET)
+    encoder_r++;
+    if(direction_r < 0) // 之前轮胎是反转
     {
-      encoder_l++;
+      direction_r = +2;
     }
     else
     {
-      encoder_l--;
+      direction_r = 1;
     }
   }
-  else // 下降沿
+  else // 现在轮胎反转
   {
-    if(b == Bit_RESET)
+    encoder_r--;
+    if(direction_r > 0) // 之前轮胎是正转
     {
-      encoder_l--;
+      direction_r = -2;
     }
     else
     {
-      encoder_l++;
+      direction_r = -1;
     }
   }
-
 }
 
+
 //
-// @简介：EXTI15_10的中断响应函数，对应右编码器的A相
+// @简介：EXTI15_10的中断响应函数，对应左编码器的A相
 //
 void EXTI15_10_IRQHandler(void)
 {
   if(EXTI_GetFlagStatus(EXTI_Line14) == SET)
   {
     EXTI_ClearFlag(EXTI_Line14); // 对标志位进行清零
+    
+    t1_l = t0_l;
+    t0_l = GetUs();
+    
     uint8_t a = GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_14); // A相的当前电压
     uint8_t b = GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_15); // B相的当前电压
+    
+  if((a == Bit_SET && b == Bit_RESET) || (a == Bit_RESET && b == Bit_SET)) // 现在轮胎反转
+  {
+    encoder_l--;
 
-    if(a == Bit_SET) // 上升沿
+    if(direction_l > 0) // 之前轮胎是正转
     {
-      if(b == Bit_RESET)
-      {
-        encoder_r++;
-      }
-      else
-      {
-        encoder_r--;
-      }
+      direction_l = -2;
     }
-    else // 下降沿
+    else
     {
-      if(b == Bit_SET)
-      {
-        encoder_r++;
-      }
-      else
-      {
-        encoder_r--;
-      }
+      direction_l = -1;
+    }
+  }
+  else // 现在轮胎是正转
+  {
+    encoder_l++;
 
+    if(direction_l < 0) // 之前轮胎是反转，现在轮胎是正转
+    {
+      direction_l = +2;
+    }
+    else
+    {
+      direction_l = 1;
     }
   }
 
 }
+
+  
+}
+
 
