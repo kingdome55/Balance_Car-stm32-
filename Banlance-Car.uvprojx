@@ -505,6 +505,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\app_pwm.h</FilePath>
             </File>
+            <File>
+              <FileName>app_mpu6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\app_mpu6050.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_mpu6050.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\app_mpu6050.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -830,6 +840,21 @@
               <FileType>1</FileType>
               <FilePath>.\my_lib\spi.c</FilePath>
             </File>
+            <File>
+              <FileName>qmath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\my_lib\qmath.c</FilePath>
+            </File>
+            <File>
+              <FileName>qmath.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\my_lib\qmath.h</FilePath>
+            </File>
+            <File>
+              <FileName>sin_table.inc</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\my_lib\sin_table.inc</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -864,6 +889,16 @@
               <FileName>encoder_test.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\test\encoder_test.h</FilePath>
+            </File>
+            <File>
+              <FileName>mpu6050_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\test\mpu6050_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpu6050_test.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\test\mpu6050_test.h</FilePath>
             </File>
           </Files>
         </Group>

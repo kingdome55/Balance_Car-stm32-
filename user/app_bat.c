@@ -19,6 +19,13 @@ void App_Bat_Init(void)
 static uint32_t lastTime = 0;
 static uint32_t stage = 0;
 
+//
+//简介：获取电池的当前电压，单位是V
+//
+float App_Bat_Get(void)
+{
+  return vbat;
+}
 
 void App_Bat_Proc(void)
 {
@@ -150,13 +157,7 @@ static void ADC1_Init(void)
   ADC_Cmd(ADC1, ENABLE); // 闭合ADC的总开关
 }
 
-//
-//简介：获取电池的当前电压，单位是V
-//
-float App_Bat_Get(void)
-{
-  return vbat;
-}
+
 
   //
   // @简介：ADC1和ADC2的中断响应函数
