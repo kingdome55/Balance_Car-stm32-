@@ -50,11 +50,15 @@ void App_MPU6050_Init(void)
   reg_write(0x6b, 0x80); //复位
   Delay(100);
   
-  reg_write(0x60, 0x00); //将MPU6050从休眠模式中唤醒
+  reg_write(0x6b, 0x00); //将MPU6050从休眠模式中唤醒（PWR_MGMT_1，清 SLEEP 位）
   
   reg_write(0x1b, 0x18); //将陀螺仪量程设置成+-2000度
   
-  reg_write(0xc1, 0x00); //将加速度计的量程上设置+-2g;
+  reg_write(0x1c, 0x00); //将加速度计的量程设置成+-2g
+  
+  reg_write(0x19, 0x04); //采样率 = 1000/(1+4) = 200Hz，与 5ms 解算周期对应
+  
+  reg_write(0x1a, 0x03); //DLPF 带宽 42Hz，抑制电机振动噪声
   
 }
 
@@ -91,8 +95,9 @@ void App_MPU6050_Proc(void)
 {
   static uint32_t nex = 0;
   
-  if(GetTick() < nex) return;
-  nex += 5;
+  uint32_t now = GetTick();
+  if(now < nex) return;
+  nex = now + 5;   // 以当前时刻为基准推进，避免阻塞后连续补算
   
   App_MPU6050_Update(); // 更新传感器的值
 
@@ -101,9 +106,9 @@ void App_MPU6050_Proc(void)
   float pitch_g = pitch + gx * 0.005;
   float roll_g = roll - gy * 0.005;
 
-  // 通过加速度计解算欧拉角
-  float pitch_a = qatan2(ay, az) / 3.1415927f * 180.0f;
-  float roll_a = qatan2(ax, az) / 3.1415927f * 180.0f;
+  // 通过加速度计解算欧拉角（qatan2 返回的就是角度，不能再做弧度→角度换算）
+  float pitch_a = qatan2(ay, az);
+  float roll_a = qatan2(ax, az);
 
   // 使用互补滤波器对陀螺仪和加速度计得计算结果进行融合
   yaw = yaw_g;

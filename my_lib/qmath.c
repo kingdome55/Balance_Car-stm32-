@@ -62,18 +62,18 @@ float qtan(float x)
     return s / c;
 }
 
-// 下面反三角函数简单封装，可自行完善
+// 下面反三角函数：输入是比值（-1~1），返回值是角度（度），与 qsin/qcos 的单位约定一致
 float qasin(float x)
 {
-    return asinf(x * 3.1415926f / 180.0f);
+    return asinf(x) * 180.0f / 3.1415926f;
 }
 float qacos(float x)
 {
-    return acosf(x * 3.1415926f / 180.0f);
+    return acosf(x) * 180.0f / 3.1415926f;
 }
 float qatan(float x)
 {
-    return atanf(x * 3.1415926f / 180.0f);
+    return atanf(x) * 180.0f / 3.1415926f;
 }
 float qatan2(float y, float x)
 {
