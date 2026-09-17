@@ -63,7 +63,7 @@ void App_Motor_SetOmega_L(float Omega)
 //
 void App_Motor_SetOmega_R(float Omega)
 {
-  PID_ChangeSP(&pid_motor_l, Omega);
+  PID_ChangeSP(&pid_motor_r, Omega);
 }
 
 //

@@ -8,15 +8,12 @@
 #include "app_mpu6050.h"
 #include "app_motor.h"
 #include "app_usart2.h"
+#include "app_contorl.h"
 
 #include "pwm_test.h"
 #include "bat_test.h"
 #include "encoder_test.h"
 #include "mpu6050_test.h"
-
-static float targetOmega;
-
-static void USART2_Proc(void);
 
 int main(void)
 {
@@ -35,31 +32,15 @@ int main(void)
   App_PWM_Init();
   App_Bat_Init();
   App_Motor_Init();
-  
+  App_MPU6050_Init();
   
 	while(1)
   {
-    targetOmega = (GetUs() / 1000) % 10 * 2.0f;
-    
-    App_Motor_SetOmega_L(targetOmega);
-    App_Motor_SetOmega_R(targetOmega);
-    
     App_Bat_Proc();
     App_Button_Proc(); // 之前误写为第二个 App_Bat_Proc()，按钮扫描此前一直未被调用
     App_Motor_Proc();
-    USART2_Proc();
+    App_MPU6050_Proc();
+    
 	}
 }
 
-static void USART2_Proc(void)
-{
-  static uint32_t nex = 0;
-  uint32_t now = GetTick();
-  if(now < nex) return;
-  nex = now + 10; 
-  
-  float omega_l = App_Encoder_GetSpeed_L();
-  float omega_r = App_Encoder_GetSpeed_R();
-  
-  My_USART_Printf(USART2, "%.3f, %.3f, %.3f\n", targetOmega, omega_l, omega_r);
-}
