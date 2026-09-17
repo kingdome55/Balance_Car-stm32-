@@ -14,7 +14,7 @@ static void Encoder_R_Init(void); // 右编码器初始化
 
 
 //
-// @简介：读取左轮胎旋转的角速度，omega的值，单位是 度/s
+// @简介：读取左轮胎旋转的角速度，omega的值，单位是 rad/s
 //
 float App_Encoder_GetSpeed_L(void)
 {
@@ -40,11 +40,11 @@ float App_Encoder_GetSpeed_L(void)
   }
   float T = dt * 1.0e-6f;
   
-  return (float)direction_cpy / T / 22.0f / (30613.0f / 1500.0f) * 360.0f;
+  return (float)direction_cpy / T / 22.0f / (30613.0f / 1500.0f) * 6.2831353f;
 }
 
 //
-// @简介：读取右轮胎旋转的角速度，omega的值，单位是 度/s
+// @简介：读取右轮胎旋转的角速度，omega的值，单位是 rad/s
 //
 float App_Encoder_GetSpeed_R(void)
 {
@@ -71,7 +71,7 @@ float App_Encoder_GetSpeed_R(void)
   }
   float T = dt * 1.0e-6f;
   
-  return (float)direction_cpy / T / 22.0f / (30613.0f / 1500.0f) * 360.0f;
+  return (float)direction_cpy / T / 22.0f / (30613.0f / 1500.0f) * 6.2831353f;
 }
 
 //

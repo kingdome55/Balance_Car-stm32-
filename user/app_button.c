@@ -1,6 +1,8 @@
 #include "app_button.h"
 #include "button.h"
 #include "app_pwm.h"
+#include "app_motor.h"
+
 static Button_TypeDef userKey;// ”√ªß∞¥≈•
 static void OnuserKey_Clicked(uint8_t clicks);
 
@@ -37,6 +39,6 @@ static void OnuserKey_Clicked(uint8_t clicks)
     {
       pwm_on = 0;
     }
-    App_PWM_Cmd(pwm_on);
+    App_Motor_Cmd(pwm_on);
   }
 }

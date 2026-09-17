@@ -515,6 +515,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\app_mpu6050.h</FilePath>
             </File>
+            <File>
+              <FileName>app_motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\app_motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\app_motor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -854,6 +864,16 @@
               <FileName>sin_table.inc</FileName>
               <FileType>5</FileType>
               <FilePath>.\my_lib\sin_table.inc</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\my_lib\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\my_lib\pid.h</FilePath>
             </File>
           </Files>
         </Group>
