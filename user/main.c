@@ -8,7 +8,7 @@
 #include "app_mpu6050.h"
 #include "app_motor.h"
 #include "app_usart2.h"
-#include "app_contorl.h"
+#include "app_control.h"
 
 #include "pwm_test.h"
 #include "bat_test.h"

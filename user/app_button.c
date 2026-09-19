@@ -2,6 +2,7 @@
 #include "button.h"
 #include "app_pwm.h"
 #include "app_motor.h"
+#include "app_control.h"
 
 static Button_TypeDef userKey;// ”√ªß∞¥≈•
 static void OnuserKey_Clicked(uint8_t clicks);
@@ -31,6 +32,9 @@ static void OnuserKey_Clicked(uint8_t clicks)
 {
   if(clicks == 1)
   {
+    App_Control_Reset();
+    
+    
     if(pwm_on == 0)
     {
       pwm_on = 1;

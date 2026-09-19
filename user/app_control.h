@@ -5,5 +5,6 @@
 
 void App_Control_Init(void);
 void App_Control_Proc(void);
+void App_Control_Reset(void);
 
 #endif
